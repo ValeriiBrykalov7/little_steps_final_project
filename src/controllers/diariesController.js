@@ -1,5 +1,5 @@
 // DiariesController
-import { Diary } from '../models/diarie.js';
+import { Diary } from '../models/diary.js';
 import '../models/emotion.js';
 
 export const getAllDiary = async (req, res) => {
