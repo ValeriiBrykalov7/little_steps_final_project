@@ -8,12 +8,11 @@ export const getMumStateByWeek = async (req, res) => {
 
   const data = await MomState.findOne({ weekNumber: Number(weekNumber) });
   if (!data) {
-    createHttpError(404, 'Тиждень не знайдено');
+    throw createHttpError(404, 'Week was not found');
   }
 
   res.status(200).json({
-    status: 200,
-    message: 'Дані отримано успішно',
+    message: 'Data retrieved successfully',
     data,
   });
 };
