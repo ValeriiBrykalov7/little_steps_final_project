@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { createSession, setSessionCookies } from '../services/auth.js';
 import { Session } from '../models/session.js';
 import { User } from '../models/user.js';
+import { isValidObjectId } from 'mongoose';
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -53,7 +54,7 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   const { sessionId } = req.cookies;
 
-  if (sessionId) {
+  if (sessionId && isValidObjectId(sessionId)) {
     await Session.deleteOne({ _id: sessionId });
   }
 
@@ -65,6 +66,10 @@ export const logout = async (req, res) => {
 };
 
 export const refreshSession = async (req, res) => {
+  if (!isValidObjectId(req.cookies.sessionId)) {
+    throw createHttpError(401, 'Invalid session id');
+  }
+
   const session = await Session.findOne({
     _id: req.cookies.sessionId,
     refreshToken: req.cookies.refreshToken,
