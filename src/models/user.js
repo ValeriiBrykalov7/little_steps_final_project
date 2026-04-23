@@ -1,6 +1,6 @@
 import { model, Schema } from 'mongoose';
-import { GENDERS } from '../constants/genders';
-import { getDateInFortyWeeks } from '../utils/date';
+import { GENDERS } from '../constants/genders.js';
+import { getDateInFortyWeeks } from '../utils/date.js';
 
 const userSchema = new Schema(
   {
