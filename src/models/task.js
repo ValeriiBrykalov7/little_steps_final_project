@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { getCurrentDate } from '../utils/date';
+import { getCurrentDate } from '../utils/date.js';
 
 const taskSchema = new Schema(
   {
