@@ -66,13 +66,19 @@ export const logout = async (req, res) => {
 };
 
 export const refreshSession = async (req, res) => {
-  if (!isValidObjectId(req.cookies.sessionId)) {
+  const { sessionId, refreshToken } = req.cookies;
+
+  if (!sessionId || !refreshToken) {
+    throw createHttpError(401, 'Missing session credentials');
+  }
+
+  if (!isValidObjectId(sessionId)) {
     throw createHttpError(401, 'Invalid session id');
   }
 
   const session = await Session.findOne({
-    _id: req.cookies.sessionId,
-    refreshToken: req.cookies.refreshToken,
+    _id: sessionId,
+    refreshToken,
   });
 
   if (!session) {
@@ -87,8 +93,7 @@ export const refreshSession = async (req, res) => {
   }
 
   await Session.deleteOne({
-    _id: req.cookies.sessionId,
-    refreshToken: req.cookies.refreshToken,
+    _id: sessionId,
   });
 
   const newSession = await createSession(session.userId);
