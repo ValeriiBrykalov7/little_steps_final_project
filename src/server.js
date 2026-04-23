@@ -30,7 +30,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/tasks', tasksRoutes);
 app.use('/api/diaries', diariesRoutes);
-app.use(weeksRoutes);
+app.use('/api/weeks', weeksRoutes);
 
 app.use(notFoundHandler);
 app.use(errors());
