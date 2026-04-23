@@ -1,9 +1,8 @@
 import { Schema, model } from 'mongoose';
-import { getCurrentDate } from '../utils/date.js';
 
 const taskSchema = new Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
       trim: true,
@@ -13,7 +12,6 @@ const taskSchema = new Schema(
     date: {
       type: String,
       required: true,
-      default: getCurrentDate,
     },
     isDone: {
       type: Boolean,
