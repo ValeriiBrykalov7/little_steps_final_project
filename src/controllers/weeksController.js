@@ -19,21 +19,48 @@ export const getPrivateDashbordInfo = async (req, res) => {
 
   const babyState = await BabyState.findOne({ weekNumber: week });
 
-  const adjustedIndex = dayIndex === 0 ? 6 : dayIndex - 1;
   const tipOfTheDay =
-    babyState.momDailyTips[adjustedIndex] || babyState.momDailyTips[0];
+    babyState.momDailyTips[dayIndex] || babyState.momDailyTips[0];
   res.status(200).json({
     currentWeek: week,
     daysToMeeting: days,
+    momDailyTips: babyState.momDailyTips,
     baby: {
       analogy: babyState.analogy,
       size: babyState.babySize,
       weight: babyState.babyWeight,
       image: babyState.image,
+      activity: babyState.babyActivity,
       description: babyState.babyDevelopment,
       interestingFact: babyState.interestingFact,
     },
     dailyAdvice: tipOfTheDay,
+  });
+};
+
+export const getPublicDashbordInfo = async (req, res) => {
+  const baby = await BabyState.findOne({ weekNumber: 1 });
+
+  if (!baby) {
+    return res.status(404).json({
+      message: 'Data not found for this week',
+    });
+  }
+  return res.status(200).json({
+    currentWeek: baby.weekNumber,
+    daysToMeeting: 280,
+    momDailyTips: baby.momDailyTips,
+    baby: {
+      analogy: baby.analogy,
+      size: baby.babySize,
+      weight: baby.babyWeight,
+      image: baby.image,
+      activity: baby.babyActivity,
+      description: baby.babyDevelopment,
+      interestingFact: baby.interestingFact,
+    },
+    dailyAdvice:
+      'Якщо ви плануєте вагітність, почніть приймати фолієву кислоту (400 мкг щодня) для профілактики вад нервової трубки у плода.',
   });
 };
 

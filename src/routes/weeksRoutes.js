@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import {
+  getPrivateDashbordInfo,
+  getPublicDashbordInfo,
   getMumStateByWeek,
   getBabyStateByWeek,
-  getPrivateDashbordInfo,
 } from '../controllers/weeksController.js';
 import { authenticate } from '../middleware/authenticate.js';
 import { celebrate } from 'celebrate';
@@ -10,8 +11,8 @@ import { weekParamSchema } from '../validations/weeksValidation.js';
 
 const router = Router();
 
-//getPrivateDashbordInfo
-router.get('/', authenticate, getPrivateDashbordInfo);
+router.get('/status/private', authenticate, getPrivateDashbordInfo);
+router.get('/status/public', getPublicDashbordInfo);
 
 //mumStateByWeek
 router.get(
@@ -28,5 +29,4 @@ router.get(
   celebrate(weekParamSchema),
   getBabyStateByWeek,
 );
-
 export default router;
