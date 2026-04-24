@@ -1,11 +1,12 @@
 import createHttpError from "http-errors";
 import { calculateWeek, calculateDays } from "../utils/pregnancy.js";
 import { BabyState } from "../models/babyState.js";
+import { MomState } from '../models/momState.js';
 
 
 
 export const getPrivateDashbordInfo =async (req,res)=>{
- const user = req.user; // чекаю на mdlwr authenticate
+ const user = req.user;
   if (!user) {
       throw createHttpError(404, "Користувача не знайдено");
     }
@@ -34,14 +35,32 @@ export const getPrivateDashbordInfo =async (req,res)=>{
       }
   });
 };
+
 export const getBabyStateByWeek =async (req,res)=>{
-    const {currentWeek}=req.params;
-    const week = parseInt(currentWeek, 10);
-    const babyState= await BabyState.findOne({
+    const {weekNumber}=req.params;
+    const week = parseInt(weekNumber, 10);
+    const data= await BabyState.findOne({
       weekNumber: week,
     });
-    if(!babyState){
+    if(!data){
       throw createHttpError(404, "Дані за цей тиждень відсутні");
     }
-    res.status(200).json(babyState);
+    res.status(200).json(data);
+};
+
+
+
+//mumStateByWeek
+export const getMumStateByWeek = async (req, res) => {
+  const { weekNumber } = req.params;
+
+  const data = await MomState.findOne({ weekNumber: Number(weekNumber) });
+  if (!data) {
+    throw createHttpError(404, 'Week was not found');
+  }
+
+  res.status(200).json({
+    message: 'Data retrieved successfully',
+    data,
+  });
 };
