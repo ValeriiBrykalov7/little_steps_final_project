@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getMumStateByWeek } from '../controllers/weeksController.js';
+import { unauthorizedUserInfo, getMumStateByWeek } from '../controllers/weeksController.js';
 import { authenticate } from '../middleware/authenticate.js';
 import { celebrate } from 'celebrate';
 import { weekParamSchema } from '../validations/weeksValidation.js';
@@ -13,5 +13,7 @@ router.get(
   celebrate(weekParamSchema),
   getMumStateByWeek,
 );
+
+router.get('/', unauthorizedUserInfo);
 
 export default router;
