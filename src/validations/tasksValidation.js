@@ -28,3 +28,15 @@ export const createTaskSchema = {
     }),
   }),
 };
+export const updateTaskStatusSchema = {
+  [Segments.PARAMS]: Joi.object({
+    taskId: Joi.string().hex().length(24).required().messages({
+      'string.length': 'Invalid Task ID format',
+    }),
+  }),
+  [Segments.BODY]: Joi.object({
+    isDone: Joi.boolean().required().messages({
+      'any.required': 'Field "isDone" is required',
+    }),
+  }),
+};
