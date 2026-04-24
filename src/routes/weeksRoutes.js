@@ -2,7 +2,6 @@ import { Router } from 'express';
 import { celebrate } from 'celebrate';
 import { getBabyStateByWeek, } from '../controllers/weeksController.js';
 import { currentWeekSchema } from '../validations/weeksValidation.js';
-// import { getBabyStateByWeek, } from '../controllers/weeksController.js';
 const router = Router();
 
 
