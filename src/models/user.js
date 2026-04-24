@@ -39,6 +39,12 @@ const userSchema = new Schema(
       required: false,
       default: 'https://ac.goit.global/fullstack/react/default-avatar.jpg',
     },
+    theme: {
+      type: String,
+      enum: ['light', 'dark'],
+      default: 'light',
+      required: true,
+    },
   },
   {
     timestamps: true,
