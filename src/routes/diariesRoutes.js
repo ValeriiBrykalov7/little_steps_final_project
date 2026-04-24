@@ -15,7 +15,6 @@ import { authenticate } from '../middleware/authenticate.js';
 const router = Router();
 
 router.get('/allDiary', authenticate, getAllDiary);
-// celebrate(getAllDiarySchema),
 
 router.post(
   '/createDiary',
