@@ -1,5 +1,6 @@
-import { Readable } from "stream";
-import { v2 as cloudinary } from "cloudinary";
+import { Readable } from 'stream';
+import { v2 as cloudinary } from 'cloudinary';
+import { v4 as uuid } from 'uuid';
 
 cloudinary.config({
   secure: true,
@@ -14,7 +15,7 @@ export async function saveFileToCloudinary(buffer) {
       {
         folder: 'leleka-app/avatars',
         resource_type: 'image',
-        public_id: `avatar_${Date.now()}`,
+        public_id: `avatar_${uuid()}`,
         overwrite: true,
         unique_filename: false,
       },

@@ -1,5 +1,6 @@
 import { Joi, Segments } from 'celebrate';
 import { GENDERS } from '../constants/genders.js';
+import { validateNotPastDate } from '../utils/validators.js';
 
 export const updateUserValidation = {
   [Segments.BODY]: Joi.object().keys({
@@ -17,13 +18,16 @@ export const updateUserValidation = {
       'string.base': 'Password must be a string',
       'string.min': 'Password must be at least 8 characters long',
     }),
-    gender: Joi.string().valid(...GENDERS).messages({
-      'string.base': 'Gender must be a string',
-      'any.only': 'Gender must be one of the allowed values',
-    }),
-    dueDate: Joi.string().isoDate().messages({
+    gender: Joi.string()
+      .valid(...GENDERS)
+      .messages({
+        'string.base': 'Gender must be a string',
+        'any.only': 'Gender must be one of the allowed values: boy, girl, null',
+      }),
+    dueDate: Joi.string().isoDate().custom(validateNotPastDate).messages({
       'string.base': 'Due date must be a string',
       'date.format': 'Due date must be a valid date',
+      'date.min': 'Date cannot be earlier than today',
     }),
   }),
-}
+};
