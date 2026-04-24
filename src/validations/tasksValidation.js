@@ -31,11 +31,16 @@ export const createTaskSchema = {
 export const updateTaskStatusSchema = {
   [Segments.PARAMS]: Joi.object({
     taskId: Joi.string().hex().length(24).required().messages({
-      'string.length': 'Invalid Task ID format',
+      'string.base': 'Task ID must be a string',
+      'string.empty': 'Task ID cannot be empty',
+      'string.hex': 'Task ID must contain only hexadecimal characters',
+      'string.length': 'Task ID must be exactly 24 characters long',
+      'any.required': 'Task ID is required',
     }),
   }),
   [Segments.BODY]: Joi.object({
     isDone: Joi.boolean().required().messages({
+      'boolean.base': 'Field "isDone" must be a boolean',
       'any.required': 'Field "isDone" is required',
     }),
   }),

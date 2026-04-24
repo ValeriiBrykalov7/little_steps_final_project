@@ -22,16 +22,12 @@ export const updateTaskStatus = async (req, res) => {
     {
       returnDocument: 'after',
       runValidators: true,
-    }
+    },
   );
 
   if (!result) {
     throw createHttpError(404, 'Task not found');
   }
 
-  res.status(200).json({
-    status: 200,
-    message: 'Successfully updated task status!',
-    data: result,
-  });
+  res.status(200).json(result);
 };
