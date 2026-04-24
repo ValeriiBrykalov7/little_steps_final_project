@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { createSession, setSessionCookies } from '../services/auth.js';
 import { Session } from '../models/session.js';
 import { User } from '../models/user.js';
+import { isValidObjectId } from 'mongoose';
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -48,4 +49,57 @@ export const login = async (req, res) => {
 
   setSessionCookies(res, newSession);
   res.status(200).json(user);
+};
+
+export const logout = async (req, res) => {
+  const { sessionId } = req.cookies;
+
+  if (sessionId && isValidObjectId(sessionId)) {
+    await Session.deleteOne({ _id: sessionId });
+  }
+
+  res.clearCookie('sessionId');
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
+
+  res.status(204).send();
+};
+
+export const refreshSession = async (req, res) => {
+  const { sessionId, refreshToken } = req.cookies;
+
+  if (!sessionId || !refreshToken) {
+    throw createHttpError(401, 'Missing session credentials');
+  }
+
+  if (!isValidObjectId(sessionId)) {
+    throw createHttpError(401, 'Invalid session id');
+  }
+
+  const session = await Session.findOne({
+    _id: sessionId,
+    refreshToken,
+  });
+
+  if (!session) {
+    throw createHttpError(401, 'Session not found');
+  }
+
+  const isSessionTokenExpired =
+    new Date() > new Date(session.refreshTokenValidUntil);
+
+  if (isSessionTokenExpired) {
+    throw createHttpError(401, 'Session token expired');
+  }
+
+  await Session.deleteOne({
+    _id: sessionId,
+  });
+
+  const newSession = await createSession(session.userId);
+  setSessionCookies(res, newSession);
+
+  res.status(200).json({
+    message: 'Session refreshed',
+  });
 };
