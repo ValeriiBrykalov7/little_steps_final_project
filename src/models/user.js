@@ -41,8 +41,8 @@ const userSchema = new Schema(
     },
     theme: {
       type: String,
-      enum: ['light', 'dark'],
-      default: 'light',
+      enum: ['boy', 'girl', 'neutral'],
+      default: 'neutral',
       required: true,
     },
   },
