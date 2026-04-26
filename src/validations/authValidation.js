@@ -2,7 +2,7 @@ import { Joi, Segments } from 'celebrate';
 
 export const registerSchema = {
   [Segments.BODY]: Joi.object({
-    username: Joi.string().max(32).required().messages({
+    name: Joi.string().max(32).required().messages({
       'string.base': 'Name must be a string',
       'string.max': 'Name must be at most 32 characters long',
       'any.required': 'Name is required',

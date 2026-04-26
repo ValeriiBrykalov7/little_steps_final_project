@@ -4,7 +4,7 @@ import { getDateInFortyWeeks } from '../utils/date.js';
 
 const userSchema = new Schema(
   {
-    username: {
+    name: {
       type: String,
       trim: true,
       maxLength: 32,
