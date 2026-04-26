@@ -47,9 +47,7 @@ export const updateTheme = async (req, res) => {
   );
 
   if (!updatedUser) {
-    const error = new Error('User not found');
-    error.status = 404;
-    throw error;
+    throw createHttpError(404, 'User not found');
   }
 
   res.status(200).json({
