@@ -16,12 +16,13 @@ import tasksRoutes from './routes/tasksRoutes.js';
 import diariesRoutes from './routes/diariesRoutes.js';
 import weeksRoutes from './routes/weeksRoutes.js';
 import { errors } from 'celebrate';
+import { corsConfig } from './config/cors.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 
 app.use(express.json({ limit: '5mb' }));
-app.use(cors());
+app.use(cors(corsConfig));
 app.use(helmet());
 app.use(cookieParser());
 app.use(logger);
