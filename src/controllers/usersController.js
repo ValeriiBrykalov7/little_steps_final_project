@@ -35,3 +35,22 @@ export const updateUserInfo = async (req, res) => {
 
   res.status(200).json(user);
 };
+
+export const updateTheme = async (req, res) => {
+  const { theme } = req.body;
+  const userId = req.user._id;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { theme },
+    { new: true, runValidators: true },
+  );
+
+  if (!updatedUser) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  res.status(200).json({
+    theme: updatedUser.theme,
+  });
+};
