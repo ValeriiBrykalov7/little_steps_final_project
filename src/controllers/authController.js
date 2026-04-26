@@ -6,7 +6,7 @@ import { User } from '../models/user.js';
 import { isValidObjectId } from 'mongoose';
 
 export const register = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { name, email, password } = req.body;
 
   const existingUser = await User.findOne({ email });
 
@@ -17,7 +17,7 @@ export const register = async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = await User.create({
-    username,
+    name,
     email,
     password: hashedPassword,
   });
