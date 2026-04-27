@@ -3,7 +3,7 @@ import { User } from '../models/user.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getCurrentUserController = (req, res) => {
-  res.status(200).json(req.data);
+  res.status(200).json(req.user);
 };
 
 export const updateUserAvatar = async (req, res, next) => {
