@@ -67,6 +67,7 @@ export const logout = async (req, res) => {
 
 export const refreshSession = async (req, res) => {
   const { sessionId, refreshToken } = req.cookies;
+  console.log(req.cookies);
 
   if (!sessionId || !refreshToken) {
     throw createHttpError(401, 'Missing session credentials');
