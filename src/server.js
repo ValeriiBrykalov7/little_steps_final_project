@@ -9,7 +9,8 @@ import { connectMongoDB } from './db/connectToMongoDB.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { logger } from './middleware/logger.js';
-
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './utils/swagger.js';
 import authRoutes from './routes/authRoutes.js';
 import usersRoutes from './routes/usersRoutes.js';
 import tasksRoutes from './routes/tasksRoutes.js';
@@ -26,6 +27,8 @@ app.use(cors(corsConfig));
 app.use(helmet());
 app.use(cookieParser());
 app.use(logger);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
