@@ -12,7 +12,8 @@ const router = Router();
  *     summary: Створити нове завдання
  *     tags: [Tasks]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     requestBody:
  *       required: true
  *       content:
@@ -23,7 +24,11 @@ const router = Router();
  *       201:
  *         description: Завдання створено
  *       400:
- *         $ref: '#/components/schemas/ValidationError'
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
  */
 router.post(
   '/createTask',
@@ -39,7 +44,8 @@ router.post(
  *     summary: Отримати список завдань
  *     tags: [Tasks]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     responses:
  *       200:
  *         description: Список завдань
@@ -53,7 +59,8 @@ router.get('/allTasks', authenticate, getTasks);
  *     summary: Оновити статус (виконано/не виконано)
  *     tags: [Tasks]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     parameters:
  *       - in: path
  *         name: taskId

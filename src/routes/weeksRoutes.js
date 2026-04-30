@@ -25,7 +25,8 @@ const router = Router();
  *     summary: Отримати приватну інформацію дашборду (для авторизованих)
  *     tags: [Weeks]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     responses:
  *       200:
  *         description: Успішно отримано дані
@@ -73,7 +74,8 @@ router.get('/status/public', getPublicDashbordInfo);
  *     summary: Отримати стан мами за номером тижня
  *     tags: [Weeks]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     parameters:
  *       - in: path
  *         name: weekNumber
@@ -108,7 +110,8 @@ router.get(
  *     summary: Отримати стан дитини за номером тижня
  *     tags: [Weeks]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     parameters:
  *       - in: path
  *         name: weekNumber

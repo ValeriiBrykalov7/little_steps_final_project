@@ -30,7 +30,11 @@ const router = Router();
  *       201:
  *         description: Успішна реєстрація
  *       400:
- *         $ref: '#/components/schemas/ValidationError'
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
  */
 router.post('/register', celebrate(registerSchema), register);
 
@@ -61,7 +65,8 @@ router.post('/login', celebrate(loginSchema), login);
  *     summary: Вихід (деактивація сесії)
  *     tags: [Auth]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     responses:
  *       204:
  *         description: Сесію видалено
@@ -74,6 +79,9 @@ router.post('/logout', authenticate, logout);
  *   post:
  *     summary: Оновлення токенів
  *     tags: [Auth]
+ *     security:
+ *       - sessionIdCookie: []
+ *         refreshTokenCookie: []
  *     responses:
  *       200:
  *         description: Нова пара токенів

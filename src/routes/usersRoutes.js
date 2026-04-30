@@ -29,14 +29,15 @@ const router = Router();
  *     summary: Отримати дані поточного користувача
  *     tags: [Users]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     responses:
  *       200:
  *         description: Дані профілю успішно отримано
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               $ref: '#/components/schemas/UserResponse'
  *       401:
  *         description: Неавторизовано
  */
@@ -49,7 +50,8 @@ router.get('/current', authenticate, getCurrentUserController);
  *     summary: Змінити колірну тему
  *     tags: [Users]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     requestBody:
  *       required: true
  *       content:
@@ -60,7 +62,11 @@ router.get('/current', authenticate, getCurrentUserController);
  *       200:
  *         description: Тему успішно змінено
  *       400:
- *         $ref: '#/components/schemas/ValidationError'
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
 */
 router.patch('/theme', authenticate, celebrate(updateThemeShema), updateTheme);
 /**
@@ -70,7 +76,8 @@ router.patch('/theme', authenticate, celebrate(updateThemeShema), updateTheme);
  *     summary: Оновити аватар користувача
  *     tags: [Users]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     requestBody:
  *       content:
  *         multipart/form-data:
@@ -102,7 +109,8 @@ router.put(
  *     description: Дозволяє змінити username, email, стать або очікувану дату пологів.
  *     tags: [Users]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     requestBody:
  *       content:
  *         application/json:
@@ -112,7 +120,11 @@ router.put(
  *       200:
  *         description: Дані успішно оновлено
  *       400:
- *         $ref: '#/components/schemas/ValidationError'
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ValidationError'
  */
 router.patch(
   '/me',

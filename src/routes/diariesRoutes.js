@@ -27,7 +27,8 @@ const router = Router();
  *     summary: Отримати список записів
  *     tags: [Diaries]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     responses:
  *       200:
  *         description: Список записів
@@ -40,7 +41,8 @@ router.get('/allDiary', authenticate, getAllDiary);
  *     summary: Додати запис у щоденник
  *     tags: [Diaries]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     requestBody:
  *       required: true
  *       content:
@@ -64,7 +66,8 @@ router.post(
  *     summary: Видалити запис
  *     tags: [Diaries]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     parameters:
  *       - in: path
  *         name: entryId
@@ -73,7 +76,7 @@ router.post(
  *           type: string
  *           pattern: '^[0-9a-fA-F]{24}$'
  *     responses:
- *       204:
+ *       200:
  *         description: Запис видалено
  */
 router.delete(
@@ -84,18 +87,19 @@ router.delete(
 );
 /**
  * @swagger
- * /api/tasks/updateDiary/{entryId}:
+ * /api/diaries/updateDiary/{entryId}:
  *   patch:
  *     summary: Оновити запис
  *     tags: [Diaries]
  *     security:
- *       - bearerAuth: []
+ *       - sessionIdCookie: []
+ *         accessTokenCookie: []
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Diary'
+ *             $ref: '#/components/schemas/UpdateDiaryRequest'
  *     responses:
  *       200:
  *         description: Статус завдання успішно оновлено

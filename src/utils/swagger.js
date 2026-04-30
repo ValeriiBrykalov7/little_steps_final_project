@@ -25,10 +25,20 @@ const options = {
     ],
     components: {
       securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
+        sessionIdCookie: {
+          type: 'apiKey',
+          in: 'cookie',
+          name: 'sessionId',
+        },
+        accessTokenCookie: {
+          type: 'apiKey',
+          in: 'cookie',
+          name: 'accessToken',
+        },
+        refreshTokenCookie: {
+          type: 'apiKey',
+          in: 'cookie',
+          name: 'refreshToken',
         },
       },
       schemas: {
@@ -124,6 +134,56 @@ const options = {
               maxItems: 12,
               items: { type: 'string', pattern: '^[0-9a-fA-F]{24}$', example: '662f9a2b8e3a1c2d4e5f6g7h' },
               description: 'Масив від 1 до 12 ID емоцій',
+            },
+          },
+        },
+        Diary: {
+          type: 'object',
+          properties: {
+            _id: {
+              type: 'string',
+              pattern: '^[0-9a-fA-F]{24}$',
+              example: '662f9a2b8e3a1c2d4e5f6a1b',
+            },
+            title: {
+              type: 'string',
+              minLength: 1,
+              maxLength: 64,
+              example: 'My happy morning',
+            },
+            description: {
+              type: 'string',
+              minLength: 1,
+              maxLength: 1000,
+              example: 'Today I felt the first baby movement...',
+            },
+            date: {
+              type: 'string',
+              pattern: '^\\d{4}-\\d{2}-\\d{2}$',
+              example: '2026-05-20',
+            },
+            emotions: {
+              type: 'array',
+              items: {
+                type: 'string',
+                pattern: '^[0-9a-fA-F]{24}$',
+                example: '662f9a2b8e3a1c2d4e5f6a1c',
+              },
+            },
+            userId: {
+              type: 'string',
+              pattern: '^[0-9a-fA-F]{24}$',
+              example: '662f9a2b8e3a1c2d4e5f6a1d',
+            },
+            createdAt: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-04-30T12:00:00Z',
+            },
+            updatedAt: {
+              type: 'string',
+              format: 'date-time',
+              example: '2026-04-30T13:30:00Z',
             },
           },
         },
