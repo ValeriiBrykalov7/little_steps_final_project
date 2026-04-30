@@ -1,6 +1,6 @@
 import { celebrate } from 'celebrate';
 import { Router } from 'express';
-import { login, logout, refreshSession, register } from '../controllers/authController.js';
+import { googleAuth, login, logout, refreshSession, register } from '../controllers/authController.js';
 import { loginSchema, registerSchema } from '../validations/authValidation.js';
 import { authenticate } from '../middleware/authenticate.js';
 
@@ -10,5 +10,6 @@ router.post('/register', celebrate(registerSchema), register);
 router.post('/login', celebrate(loginSchema), login);
 router.post('/logout', authenticate, logout);
 router.post('/refresh', refreshSession);
+router.post('/google', googleAuth);
 
 export default router;

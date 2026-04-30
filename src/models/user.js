@@ -19,7 +19,9 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        return this.provider === 'local';
+      },
       minLength: 8,
       maxLength: 128,
     },
@@ -44,6 +46,17 @@ const userSchema = new Schema(
       enum: ['boy', 'girl', 'neutral'],
       default: 'neutral',
       required: true,
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+
+    provider: {
+      type: String,
+      enum: ['local', 'google'],
+      default: 'local',
     },
   },
   {
