@@ -67,7 +67,7 @@ router.get('/current', authenticate, getCurrentUserController);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ValidationError'
-*/
+ */
 router.patch('/theme', authenticate, celebrate(updateThemeShema), updateTheme);
 /**
  * @swagger
@@ -129,6 +129,7 @@ router.put(
 router.patch(
   '/me',
   authenticate,
+  upload.single('photo'),
   celebrate(updateUserValidation),
   updateUserInfo,
 );

@@ -23,8 +23,16 @@ export const updateUserAvatar = async (req, res, next) => {
 };
 
 export const updateUserInfo = async (req, res) => {
-  const user = await User.findOneAndUpdate({ _id: req.user._id }, req.body, {
-    returnDocument: 'after',
+  const updateData = { ...req.body };
+
+  if (req.file) {
+    const result = await saveFileToCloudinary(req.file.buffer);
+
+    updateData.photo = result.secure_url;
+  }
+
+  const user = await User.findByIdAndUpdate(req.user._id, updateData, {
+    new: true,
   });
 
   if (!user) throw createHttpError(404, 'User not found');
