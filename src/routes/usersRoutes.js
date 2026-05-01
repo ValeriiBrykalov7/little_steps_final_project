@@ -129,7 +129,7 @@ router.put(
 router.patch(
   '/me',
   authenticate,
-  upload.single('photo'),
+  upload.single('avatar'),
   celebrate(updateUserValidation),
   updateUserInfo,
 );
