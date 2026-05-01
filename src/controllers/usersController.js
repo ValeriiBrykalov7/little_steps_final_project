@@ -1,7 +1,8 @@
 import createHttpError from 'http-errors';
 import { User } from '../models/user.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
-
+import { sendVerificationEmail } from '../services/mailer.service.js';
+import { randomBytes } from 'crypto';
 export const getCurrentUserController = (req, res) => {
   res.status(200).json(req.user);
 };
@@ -23,13 +24,61 @@ export const updateUserAvatar = async (req, res, next) => {
 };
 
 export const updateUserInfo = async (req, res) => {
-  const user = await User.findOneAndUpdate({ _id: req.user._id }, req.body, {
+  const { email, ...rest } = req.body;
+
+  // оновлюємо всі поля крім email
+  const user = await User.findByIdAndUpdate(req.user._id, rest, {
     returnDocument: 'after',
   });
 
   if (!user) throw createHttpError(404, 'User not found');
 
-  res.status(200).json(user);
+  // якщо email не змінюється — відповідаємо одразу
+  if (!email || email === user.email) {
+    return res.status(200).json(user);
+  }
+
+  // перевірка чи email вже зайнятий
+  const emailTaken = await User.findOne({ email });
+  if (emailTaken) throw createHttpError(409, 'Email already in use');
+
+  // генерація токена і збереження pending email
+  const token = randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + 1000 * 60 * 60); // 1 година
+
+  await User.findByIdAndUpdate(req.user._id, {
+    pendingEmail: email,
+    verifyEmailToken: token,
+    verifyEmailExpires: expires,
+  });
+
+  await sendVerificationEmail(email, token);
+
+  res.status(200).json({
+    ...user.toObject(),
+    message: 'Check your new email to confirm the change',
+  });
+};
+
+export const verifyEmailChange = async (req, res) => {
+  const { token } = req.body;
+
+  const user = await User.findOne({ verifyEmailToken: token });
+
+  if (!user) throw createHttpError(400, 'Invalid token');
+
+  if (user.verifyEmailExpires < new Date()) {
+    throw createHttpError(400, 'Token expired');
+  }
+
+  await User.findByIdAndUpdate(user._id, {
+    email: user.pendingEmail,
+    pendingEmail: null,
+    verifyEmailToken: null,
+    verifyEmailExpires: null,
+  });
+
+  res.status(200).json({ message: 'Email successfully updated' });
 };
 
 export const updateTheme = async (req, res) => {

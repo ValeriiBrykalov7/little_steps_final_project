@@ -45,6 +45,9 @@ const userSchema = new Schema(
       default: 'neutral',
       required: true,
     },
+    pendingEmail: { type: String, default: null },
+    verifyEmailToken: { type: String, default: null },
+    verifyEmailExpires: { type: Date, default: null },
   },
   {
     timestamps: true,

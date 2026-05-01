@@ -5,6 +5,7 @@ import {
   updateTheme,
   updateUserAvatar,
   updateUserInfo,
+  verifyEmailChange,
 } from '../controllers/usersController.js';
 
 import { upload } from '../middleware/multer.js';
@@ -132,5 +133,30 @@ router.patch(
   celebrate(updateUserValidation),
   updateUserInfo,
 );
+/**
+ * @swagger
+ * /api/users/verify-email:
+ *   patch:
+ *     summary: Підтвердити зміну email
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: Токен підтвердження email
+ *     responses:
+ *       200:
+ *         description: Email успішно оновлено
+ *       400:
+ *         description: Невалідний або прострочений токен
+ */
 
+
+
+router.patch('/verify-email', authenticate, verifyEmailChange);
 export default router;
