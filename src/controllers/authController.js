@@ -4,6 +4,7 @@ import { createSession, setSessionCookies } from '../services/auth.js';
 import { Session } from '../models/session.js';
 import { User } from '../models/user.js';
 import { isValidObjectId } from 'mongoose';
+import { OAuth2Client } from 'google-auth-library';
 
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -103,4 +104,65 @@ export const refreshSession = async (req, res) => {
   res.status(200).json({
     message: 'Session refreshed',
   });
+};
+
+// const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+export const googleAuth = async (req, res) => {
+  const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+  const { credential } = req.body;
+  console.log('GOOGLE CREDENTIAL:', credential);
+
+   if (!credential) {
+    throw createHttpError(400, 'Google credential is required');
+  }
+  const ticket = await googleClient.verifyIdToken({
+    idToken: credential,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+  console.log('GOOGLE TICKET:', ticket);
+
+  const payload = ticket.getPayload();
+
+  if (!payload?.email || !payload?.sub) {
+    throw createHttpError(401, 'Invalid Google token');
+  }
+
+  const { email, name, picture, sub } = payload;
+
+  let user = await User.findOne({ email });
+
+  if (!user) {
+    user = await User.create({
+      username: name || email.split('@')[0],
+      email,
+      avatar: picture,
+      googleId: sub,
+      provider: 'google',
+    });
+  } else {
+    user.googleId = user.googleId || sub;
+    user.provider = user.provider || 'google';
+
+    if (picture && !user.avatar) {
+      user.avatar = picture;
+    }
+
+    await user.save();
+  }
+
+  const { sessionId } = req.cookies;
+
+  if (sessionId && isValidObjectId(sessionId)) {
+    await Session.deleteOne({ _id: sessionId });
+  }
+
+  const newSession = await createSession(user._id);
+
+  setSessionCookies(res, newSession);
+
+  res.status(200).json(user);
+
+
 };

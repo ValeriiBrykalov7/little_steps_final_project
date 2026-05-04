@@ -5,7 +5,6 @@ import {
   updateTheme,
   updateUserAvatar,
   updateUserInfo,
-  verifyEmailChange,
 } from '../controllers/usersController.js';
 
 import { upload } from '../middleware/multer.js';
@@ -68,7 +67,7 @@ router.get('/current', authenticate, getCurrentUserController);
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ValidationError'
-*/
+ */
 router.patch('/theme', authenticate, celebrate(updateThemeShema), updateTheme);
 /**
  * @swagger
@@ -130,33 +129,34 @@ router.put(
 router.patch(
   '/me',
   authenticate,
+  upload.single('avatar'),
   celebrate(updateUserValidation),
   updateUserInfo,
 );
-/**
- * @swagger
- * /api/users/verify-email:
- *   patch:
- *     summary: Підтвердити зміну email
- *     tags: [Users]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               token:
- *                 type: string
- *                 description: Токен підтвердження email
- *     responses:
- *       200:
- *         description: Email успішно оновлено
- *       400:
- *         description: Невалідний або прострочений токен
- */
+// /**
+//  * @swagger
+//  * /api/users/verify-email:
+//  *   patch:
+//  *     summary: Підтвердити зміну email
+//  *     tags: [Users]
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             type: object
+//  *             properties:
+//  *               token:
+//  *                 type: string
+//  *                 description: Токен підтвердження email
+//  *     responses:
+//  *       200:
+//  *         description: Email успішно оновлено
+//  *       400:
+//  *         description: Невалідний або прострочений токен
+//  */
 
 
 
-router.patch('/verify-email', authenticate, verifyEmailChange);
+// router.patch('/verify-email', authenticate, updateUserInfo);
 export default router;

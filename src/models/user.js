@@ -19,7 +19,9 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        return this.provider === 'local';
+      },
       minLength: 8,
       maxLength: 128,
     },
@@ -48,6 +50,18 @@ const userSchema = new Schema(
     pendingEmail: { type: String, default: null },
     verifyEmailToken: { type: String, default: null },
     verifyEmailExpires: { type: Date, default: null },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+
+    provider: {
+      type: String,
+      enum: ['local', 'google'],
+      default: 'local',
+    },
+
   },
   {
     timestamps: true,

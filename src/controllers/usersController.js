@@ -24,63 +24,58 @@ export const updateUserAvatar = async (req, res, next) => {
 };
 
 export const updateUserInfo = async (req, res) => {
-  const { email, ...rest } = req.body;
+  const { email, token, ...rest } = req.body;
 
-  // оновлюємо всі поля крім email
+  // якщо прийшов токен — верифікуємо email
+  if (token) {
+    const user = await User.findOne({ verifyEmailToken: token });
+
+    if (!user) throw createHttpError(400, 'Invalid token');
+
+    if (user.verifyEmailExpires < new Date()) {
+      throw createHttpError(400, 'Token expired');
+    }
+
+    await User.findByIdAndUpdate(user._id, {
+      email: user.pendingEmail,
+      pendingEmail: null,
+      verifyEmailToken: null,
+      verifyEmailExpires: null,
+    });
+
+    return res.status(200).json({ message: 'Email successfully updated' });
+  }
+
+  // звичайне оновлення даних
   const user = await User.findByIdAndUpdate(req.user._id, rest, {
     returnDocument: 'after',
   });
 
   if (!user) throw createHttpError(404, 'User not found');
 
-  // якщо email не змінюється — відповідаємо одразу
   if (!email || email === user.email) {
     return res.status(200).json(user);
   }
 
-  // перевірка чи email вже зайнятий
   const emailTaken = await User.findOne({ email });
   if (emailTaken) throw createHttpError(409, 'Email already in use');
 
-  // генерація токена і збереження pending email
-  const token = randomBytes(32).toString('hex');
-  const expires = new Date(Date.now() + 1000 * 60 * 60); // 1 година
+  const verifyToken = randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + 1000 * 60 * 60);
 
   await User.findByIdAndUpdate(req.user._id, {
     pendingEmail: email,
-    verifyEmailToken: token,
+    verifyEmailToken: verifyToken,
     verifyEmailExpires: expires,
   });
 
-  await sendVerificationEmail(email, token);
+  await sendVerificationEmail(email, verifyToken);
 
   res.status(200).json({
     ...user.toObject(),
     message: 'Check your new email to confirm the change',
   });
 };
-
-export const verifyEmailChange = async (req, res) => {
-  const { token } = req.body;
-
-  const user = await User.findOne({ verifyEmailToken: token });
-
-  if (!user) throw createHttpError(400, 'Invalid token');
-
-  if (user.verifyEmailExpires < new Date()) {
-    throw createHttpError(400, 'Token expired');
-  }
-
-  await User.findByIdAndUpdate(user._id, {
-    email: user.pendingEmail,
-    pendingEmail: null,
-    verifyEmailToken: null,
-    verifyEmailExpires: null,
-  });
-
-  res.status(200).json({ message: 'Email successfully updated' });
-};
-
 export const updateTheme = async (req, res) => {
   const { theme } = req.body;
   const userId = req.user._id;
