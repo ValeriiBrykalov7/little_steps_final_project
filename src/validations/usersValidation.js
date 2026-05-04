@@ -38,11 +38,14 @@ export const updateUserValidation = {
 
 export const updateThemeShema = {
   [Segments.BODY]: Joi.object({
-    theme: Joi.string().valid('boy', 'girl', 'neutral').required().messages({
-      'string.base': '"theme" must be a string',
-      'any.required': '"theme" is required',
-      'any.only': '"theme" must be one of [boy, girl, neutral]',
-      'string.empty': '"theme" cannot be empty',
-    }),
+    theme: Joi.string()
+      .valid(...GENDERS)
+      .required()
+      .messages({
+        'string.base': '"theme" must be a string',
+        'any.required': '"theme" is required',
+        'any.only': '"theme" must be one of ["boy", "girl", "null"]',
+        'string.empty': '"theme" cannot be empty',
+      }),
   }),
 };
