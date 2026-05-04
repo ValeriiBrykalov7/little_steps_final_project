@@ -1,7 +1,8 @@
 import createHttpError from 'http-errors';
 import { User } from '../models/user.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
-
+import { sendVerificationEmail } from '../services/mailer.service.js';
+import { randomBytes } from 'crypto';
 export const getCurrentUserController = (req, res) => {
   res.status(200).json(req.user);
 };
@@ -23,23 +24,58 @@ export const updateUserAvatar = async (req, res, next) => {
 };
 
 export const updateUserInfo = async (req, res) => {
-  const updateData = { ...req.body };
+  const { email, token, ...rest } = req.body;
 
-  if (req.file) {
-    const result = await saveFileToCloudinary(req.file.buffer);
+  // якщо прийшов токен — верифікуємо email
+  if (token) {
+    const user = await User.findOne({ verifyEmailToken: token });
 
-    updateData.avatar = result.secure_url;
+    if (!user) throw createHttpError(400, 'Invalid token');
+
+    if (user.verifyEmailExpires < new Date()) {
+      throw createHttpError(400, 'Token expired');
+    }
+
+    await User.findByIdAndUpdate(user._id, {
+      email: user.pendingEmail,
+      pendingEmail: null,
+      verifyEmailToken: null,
+      verifyEmailExpires: null,
+    });
+
+    return res.status(200).json({ message: 'Email successfully updated' });
   }
 
-  const user = await User.findByIdAndUpdate(req.user._id, updateData, {
-    new: true,
+  // звичайне оновлення даних
+  const user = await User.findByIdAndUpdate(req.user._id, rest, {
+    returnDocument: 'after',
   });
 
   if (!user) throw createHttpError(404, 'User not found');
 
-  res.status(200).json(user);
-};
+  if (!email || email === user.email) {
+    return res.status(200).json(user);
+  }
 
+  const emailTaken = await User.findOne({ email });
+  if (emailTaken) throw createHttpError(409, 'Email already in use');
+
+  const verifyToken = randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + 1000 * 60 * 60);
+
+  await User.findByIdAndUpdate(req.user._id, {
+    pendingEmail: email,
+    verifyEmailToken: verifyToken,
+    verifyEmailExpires: expires,
+  });
+
+  await sendVerificationEmail(email, verifyToken);
+
+  res.status(200).json({
+    ...user.toObject(),
+    message: 'Check your new email to confirm the change',
+  });
+};
 export const updateTheme = async (req, res) => {
   const { theme } = req.body;
   const userId = req.user._id;

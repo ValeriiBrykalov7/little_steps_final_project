@@ -10,7 +10,7 @@ export const updateUserValidation = {
       'string.min': 'Username must be at least 1 character long',
       'string.max': 'Username must be at most 30 characters long',
     }),
-    email: Joi.string().email().messages({
+    email: Joi.string().email().lowercase().messages({
       'string.base': 'Email must be a string',
       'string.email': 'Email must be a valid email address',
     }),
@@ -28,6 +28,10 @@ export const updateUserValidation = {
       'string.base': 'Due date must be a string',
       'date.format': 'Due date must be a valid date',
       'date.min': 'Date cannot be earlier than today',
+    }),
+    token: Joi.string().hex().length(64).messages({
+      'string.hex': 'Token must be a valid hex string',
+      'string.length': 'Token must be 64 characters long',
     }),
   }),
 };

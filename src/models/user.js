@@ -47,6 +47,9 @@ const userSchema = new Schema(
       default: 'neutral',
       required: true,
     },
+    pendingEmail: { type: String, default: null },
+    verifyEmailToken: { type: String, default: null },
+    verifyEmailExpires: { type: Date, default: null },
     googleId: {
       type: String,
       unique: true,
@@ -58,6 +61,7 @@ const userSchema = new Schema(
       enum: ['local', 'google'],
       default: 'local',
     },
+
   },
   {
     timestamps: true,
