@@ -43,8 +43,8 @@ const userSchema = new Schema(
     },
     theme: {
       type: String,
-      enum: ['boy', 'girl', 'neutral'],
-      default: 'neutral',
+      enum: ['boy', 'girl', 'null'],
+      default: 'null',
       required: true,
     },
     pendingEmail: { type: String, default: null },
