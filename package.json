@@ -30,6 +30,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "google-auth-library": "^10.6.2",
+    "handlebar": "^1.0.0",
     "helmet": "^8.1.0",
     "http-errors": "^2.0.1",
     "jsonwebtoken": "^9.0.3",
