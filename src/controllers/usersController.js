@@ -46,6 +46,12 @@ export const updateUserInfo = async (req, res) => {
     return res.status(200).json({ message: 'Email successfully updated' });
   }
 
+  if (req.file) {
+    const result = await saveFileToCloudinary(req.file.buffer);
+
+    rest.avatar = result.secure_url;
+  }
+
   // звичайне оновлення даних
   const user = await User.findByIdAndUpdate(req.user._id, rest, {
     returnDocument: 'after',
@@ -76,6 +82,7 @@ export const updateUserInfo = async (req, res) => {
     message: 'Check your new email to confirm the change',
   });
 };
+
 export const updateTheme = async (req, res) => {
   const { theme } = req.body;
   const userId = req.user._id;
