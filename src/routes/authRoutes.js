@@ -1,11 +1,23 @@
 import { celebrate } from 'celebrate';
 import { Router } from 'express';
-import { googleAuth, login, logout, refreshSession, register } from '../controllers/authController.js';
-import { loginSchema, registerSchema } from '../validations/authValidation.js';
+import {
+  googleAuth,
+  login,
+  logout,
+  refreshSession,
+  register,
+  requestResetEmail,
+  resetPassword,
+} from '../controllers/authController.js';
+import {
+  loginSchema,
+  registerSchema,
+  requestResetEmailSchema,
+  resetPasswordSchema,
+} from '../validations/authValidation.js';
 import { authenticate } from '../middleware/authenticate.js';
 
 const router = Router();
-
 
 /**
  * @swagger
@@ -88,5 +100,14 @@ router.post('/logout', authenticate, logout);
  */
 router.post('/refresh', refreshSession);
 router.post('/google', googleAuth);
-
+router.post(
+  '/request-reset-email',
+  celebrate(requestResetEmailSchema),
+  requestResetEmail,
+);
+router.post(
+  '/reset-password',
+  celebrate(resetPasswordSchema),
+  resetPassword,
+);
 export default router;
