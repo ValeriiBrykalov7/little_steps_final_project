@@ -1,7 +1,7 @@
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'https://little-steps-kappa.vercel.app',
+  'https://little-steps-leleka.com',
 ];
 
 export const corsConfig = {
