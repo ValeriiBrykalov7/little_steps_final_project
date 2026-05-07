@@ -195,7 +195,7 @@ export const requestResetEmail = async (req, res, next) => {
 
   const html = template({
     name: user.username,
-    link: `${process.env.FRONTEND_DOMAIN}/reset-password?token=${resetToken}`,
+    link: `${process.env.FRONTEND_DOMAIN}/auth/reset-password?token=${resetToken}`,
     logoUrl: process.env.EMAIL_LOGO_URL,
     bannerUrl: process.env.EMAIL_BANNER_URL,
   });
@@ -210,7 +210,7 @@ export const requestResetEmail = async (req, res, next) => {
         '',
         'Ми отримали запит на скидання пароля для вашого акаунта Little Steps.',
         'Щоб встановити новий пароль, відкрийте посилання нижче:',
-        `${process.env.FRONTEND_DOMAIN}/reset-password?token=${resetToken}`,
+        `${process.env.FRONTEND_DOMAIN}/auth/reset-password?token=${resetToken}`,
         '',
         'Посилання дійсне 15 хвилин.',
         'Якщо ви не надсилали цей запит, просто проігноруйте цей лист.',
